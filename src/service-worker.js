@@ -9,17 +9,23 @@ const STORE_NAME = 'offline-stories';
 const API_BASE_URL = 'https://story-api.dicoding.dev/v1'; 
 const STORY_API_URL = `${API_BASE_URL}/stories`;
 
+// **KRITIS: Base path untuk GitHub Pages**
+const BASE_PATH = '/storyappMargohan'; 
+
 const urlsToCache = [
-  '/', 
-  '/index.html',
-  '/manifest.json', 
-  // Aset Dasar
-  './app.bundle.js', 
-  './styles.bundle.css', 
+  BASE_PATH + '/', 
+  BASE_PATH + '/index.html',
+  BASE_PATH + '/manifest.json', 
+  
+  // Aset Dasar (Koreksi Nama File JS dan menggunakan BASE_PATH)
+  BASE_PATH + '/bundle.js',       // <-- KOREKSI: Menggunakan nama file bundle.js
+  BASE_PATH + '/styles.bundle.css', // <-- Menggunakan BASE_PATH
+  
   // Path icons
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  // Aset Leaflet
+  BASE_PATH + '/icons/icon-192.png',
+  BASE_PATH + '/icons/icon-512.png',
+  
+  // Aset Leaflet (URL eksternal tidak perlu diubah)
   'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
@@ -59,8 +65,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   
-  // Penyesuaian path untuk GitHub Pages
-  const requestUrl = event.request.url.replace(`${self.location.origin}/storyappMargohan`, self.location.origin);
+  // Penyesuaian path untuk GitHub Pages (menghapus BASE_PATH jika ada di URL request)
+  const requestUrl = event.request.url.replace(`${self.location.origin}${BASE_PATH}`, self.location.origin);
 
   // --- Strategy: Stale-While-Revalidate untuk Data API (/stories) ---
   if (requestUrl.includes(STORY_API_URL) && !requestUrl.includes('push-subscribe')) {
@@ -87,8 +93,8 @@ self.addEventListener('fetch', (event) => {
              return cachedResponse;
         }
         
-        // Fallback ke network, atau ke shell jika network gagal
-        return networkFetch.catch(() => caches.match('/index.html')); 
+        // Fallback ke network, atau ke shell jika network gagal (Menggunakan BASE_PATH)
+        return networkFetch.catch(() => caches.match(BASE_PATH + '/index.html')); 
       })
     );
     return;
@@ -109,7 +115,8 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         })
-        .catch(() => caches.match('/index.html')); // fallback offline shell
+        // Fallback offline shell (Menggunakan BASE_PATH)
+        .catch(() => caches.match(BASE_PATH + '/index.html')); 
     })
   );
 });
@@ -119,7 +126,7 @@ self.addEventListener('fetch', (event) => {
 // --- OFFLINE SYNC HANDLERS (IndexedDB & Sync) ---
 // ---------------------------------------------------------------------
 
-// --- Helper Functions (Asumsi diletakkan di sini) ---
+// --- Helper Functions (Asumsi diletakkan di sini, implementasi penuh ada di filemu) ---
 async function getOfflineStoriesSW() { /* ... */ }
 async function deleteOfflineStorySW(id) { /* ... */ }
 const dataURLToBlob = (dataurl, filename) => { /* ... */ };
