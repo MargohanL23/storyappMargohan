@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyStory App</title>
+  <!-- NOTE:
+       - CSS (including ./styles/main.css and leaflet/dist/leaflet.css) dibundle/import melalui JS (webpack).
+       - Jangan tambahkan link ke bundled CSS di sini (menghindari MIME/Integrity errors).
+  -->
+</head>
+
+<body>
+  <!-- Root SPA -->
+  <div id="app"></div>
+
+  <!-- Script bundle dari Webpack (entry) -->
+  <script type="module" src="./scripts/app.js"></script>
+</body>
+</html>
